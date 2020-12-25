@@ -1,0 +1,37 @@
+CREATE DATABASE IF NOT EXISTS `nodelogin` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `nodelogin`;
+
+CREATE TABLE IF NOT EXISTS `accounts` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `gender` varchar(8) NOT NULL,
+  `phone_number` varchar(15) NOT NULL,
+  `birthdate` date NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `postal_code` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+INSERT INTO `accounts` (`id`, `name`,`username`, `password`, `email`,`gender`,`phone_number`,`birthdate`,`address`) VALUES (1, 'testuser','test', 'test', 'test@test.com','female','0123456789','2020-1-1','Mandara,Alexandria');
+
+ALTER TABLE `accounts` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+
+CREATE TABLE IF NOT EXISTS `managers` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `gender` varchar(8) NOT NULL,
+  `phone_number` varchar(15) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+INSERT INTO `managers` (`id`, `username`, `password`, `email`) VALUES (1, 'admin', 'admin', 'admin@admin.com');
+
+ALTER TABLE `managers` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
