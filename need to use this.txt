@@ -1,0 +1,5 @@
+npm install touch-cli -g
+npm install bcryptjs --save
+//npm install file-upload
+npm install body-parser --save
+npm install express-fileupload
