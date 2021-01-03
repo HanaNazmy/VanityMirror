@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Home</title>
+    <!-- BOOTSTRAP CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container p-5">
+        <div class="card">
+            <div class="card-body">
+                    <h1>Hello, <%= name %></h1>
+            </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="container p-5">
+        <div class="row">
+            <div class="col-sm-5 bg-light border rounded py-3">
+                <h2 class="text-center">Add a Mirror</h2>
+                <form action="/addMirror" method="POST">
+                    <div class="form-group">
+                      <label for="_name">Mirror Name</label>
+                      <input type="text" name="mirror_name" id="_name" class="form-control" placeholder="Name" rnodeequired>
+                    </div>
+                    <div class="form-group">
+                      <label for="_color">Color</label>
+                      <input type="text" name="mirror_color" id="_color" class="form-control" placeholder="Color" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="_price">Price</label>
+                      <input type="text" name="mirror_price" id="_price" class="form-control" placeholder="Price" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="_bulbs">Number of bulbs</label>
+                      <input type="text" name="mirror_bulbs" id="_bulbs" class="form-control" placeholder="Number of Bulbs" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="_img">Image</label>
+                      <input type="file" name="mirror_img" id="_img" class="form-control"required>
+                    </div>
+                    <!-- <% if (locals.login_errors) {
+                      login_errors.forEach(function(error_msg){ %>
+                      <div class="alert alert-danger" role="alert"><%= error_msg %></div>
+                    <% });
+                    } %> -->
+                    <button type="submit" class="btn btn-primary">Add Mirror</button>
+                </form>
+            </div>
+          </div>
+        </div>
+      <div class="container p-5">
+        <div class="">
+            <a href="/logout" class="btn btn-danger">Logout</a>
+        </div>
+      </div>
+</body>
+</html>
