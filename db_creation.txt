@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS `nodelogin` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `nodelogin`;
+CREATE DATABASE IF NOT EXISTS `vanitysystem` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `vanitysystem`;
 
 CREATE TABLE IF NOT EXISTS `accounts` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -16,18 +16,68 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `accounts` (`id`, `name`,`username`, `password`, `email`,`gender`,`phone_number`,`birthdate`,`address`) VALUES (1, 'testname','testuser', 'testtest', 'test@test.com','female','0123456789','2020-1-1','Mandara,Alexandria');
-
-CREATE TABLE IF NOT EXISTS `managers` (
+CREATE TABLE IF NOT EXISTS `mirrors` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `gender` varchar(8) NOT NULL,
-  `phone_number` varchar(15) NOT NULL,
+  `color` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price` int(11) unsigned NOT NULL,
+  `bulbsnumber` int(11) unsigned NOT NULL,
+  `length` varchar(16) NOT NULL,
+  `width` varchar(16) NOT NULL,
+  `thickness` varchar(16) NOT NULL,
+  `img` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY unique_mirror(name,color,bulbsnumber,price,length,width,thickness)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `managers` (`id`, `username`, `password`, `email`) VALUES (1, 'admin', 'admin', 'admin@admin.com');
+CREATE TABLE IF NOT EXISTS `shelves` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `color` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price` int(11) unsigned NOT NULL,
+  `length` varchar(16) NOT NULL,
+  `width` varchar(16) NOT NULL,
+  `thickness` varchar(16) NOT NULL,
+  `img` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY unique_shelf(name,color,price,length,width,thickness)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `sets` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `color` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price` int(11) unsigned NOT NULL,
+  `length` varchar(16) NOT NULL,
+  `width` varchar(16) NOT NULL,
+  `thickness` varchar(16) NOT NULL,
+  `img` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY unique_set(name,color,price,length,width,thickness)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `corners` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `color` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price` int(11) unsigned NOT NULL,
+  `length` varchar(16) NOT NULL,
+  `width` varchar(16) NOT NULL,
+  `thickness` varchar(16) NOT NULL,
+  `img` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY unique_corner(name,color,price,length,width,thickness)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `stands` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `color` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price` int(11) unsigned NOT NULL,
+  `length` varchar(16) NOT NULL,
+  `width` varchar(16) NOT NULL,
+  `thickness` varchar(16) NOT NULL,
+  `img` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY unique_stand(name,color,price,length,width,thickness)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
