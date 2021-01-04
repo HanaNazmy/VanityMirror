@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Product</title>
+    <!-- BOOTSTRAP CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container p-5">
+        <div class="col">
+            <div class="col-sm-5 bg-light border rounded py-3">
+                <h2 class="text-center">Add a Mirror</h2>
+                <form action="/addMirror" method="POST" enctype="multipart/form-data">
+                    <button type="submit" class="btn btn-primary">Add a Mirror</button>
+                </form>
+            </div>
+            <div class="col-sm-5 bg-light border rounded py-3">
+                <h2 class="text-center">Add a Coffee Corner</h2>
+                <form action="/addCorner" method="POST" enctype="multipart/form-data">
+                    <button type="submit" class="btn btn-primary">Add a Coffee Corner</button>
+                </form>
+            </div>
+            <div class="col-sm-5 bg-light border rounded py-3">
+                <h2 class="text-center">Add a Set</h2>
+                <form action="/addSet" method="POST" enctype="multipart/form-data">
+                    <button type="submit" class="btn btn-primary">Add a Set</button>
+                </form>
+            </div>
+            <div class="col-sm-5 bg-light border rounded py-3">
+                <h2 class="text-center">Add a Shelf</h2>
+                <form action="/addShelf" method="POST" enctype="multipart/form-data">
+                    <button type="submit" class="btn btn-primary">Add a Shelf</button>
+                </form>
+            </div>
+            <div class="col-sm-5 bg-light border rounded py-3">
+                <h2 class="text-center">Add a Stand</h2>
+                <form action="/addStand" method="POST" enctype="multipart/form-data">
+                    <button type="submit" class="btn btn-primary">Add a Stand</button>
+                </form>
+            </div>
+          </div>
+        </div>
+      <div class="container p-5">
+        <div class="">
+            <a href="/logout" class="btn btn-danger">Logout</a>
+        </div>
+      </div>
+</body>
+</html>

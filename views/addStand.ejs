@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Home</title>
+    <title>Add Stand</title>
     <!-- BOOTSTRAP CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
@@ -12,46 +12,42 @@
   <div class="container p-5">
       <div class="row">
           <div class="col-sm-5 bg-light border rounded py-3">
-              <h2 class="text-center">Add a Mirror</h2>
-              <form action="/displayMirror" method="POST" enctype="multipart/form-data">
+              <h2 class="text-center">Add a Mirror Stand</h2>
+              <form action="/displayStand" method="POST" enctype="multipart/form-data">
                   <div class="form-group">
-                    <label for="_name">Mirror Name</label>
-                    <input type="text" name="mirror_name" id="_name" class="form-control" placeholder="Name" rnodeequired>
+                    <label for="_name">Stand Name</label>
+                    <input type="text" name="stand_name" id="_name" class="form-control" placeholder="Name" rnodeequired>
                   </div>
                   <div class="form-group">
                     <label for="_color">Color</label>
-                    <input type="text" name="mirror_color" id="_color" class="form-control" placeholder="Color" required>
+                    <input type="text" name="stand_color" id="_color" class="form-control" placeholder="Color" required>
                   </div>
                   <div class="form-group">
                     <label for="_price">Price</label>
-                    <input type="text" name="mirror_price" id="_price" class="form-control" placeholder="Price" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="_bulbs">Number of bulbs</label>
-                    <input type="text" name="mirror_bulbs" id="_bulbs" class="form-control" placeholder="Number of Bulbs" required>
+                    <input type="text" name="stand_price" id="_price" class="form-control" placeholder="Price" required>
                   </div>
                   <div class="form-group">
                     <label for="_length">Length</label>
-                    <input type="text" name="mirror_length" id="_length" class="form-control" placeholder="Length" required>
+                    <input type="text" name="stand_length" id="_length" class="form-control" placeholder="Length" required>
                   </div>
                   <div class="form-group">
                     <label for="_width">Width</label>
-                    <input type="text" name="mirror_width" id="_width" class="form-control" placeholder="Width" required>
+                    <input type="text" name="stand_width" id="_width" class="form-control" placeholder="Width" required>
                   </div>
                   <div class="form-group">
                     <label for="_thickness">Thickness</label>
-                    <input type="text" name="mirror_thickness" id="_thickness" class="form-control" placeholder="Thickness" required>
+                    <input type="text" name="stand_thickness" id="_thickness" class="form-control" placeholder="Thickness" required>
                   </div>
                   <div class="form-group">
                     <label for="_img">Image</label>
-                    <input type="file" name="mirror_img" id="_img" class="form-control"required>
+                    <input type="file" name="stand_img" id="_img" class="form-control"required>
                   </div>
                   <!-- <% if (locals.login_errors) {
                     login_errors.forEach(function(error_msg){ %>
                     <div class="alert alert-danger" role="alert"><%= error_msg %></div>
                   <% });
                   } %> -->
-                  <button type="submit" class="btn btn-primary">Add Mirror</button>
+                  <button type="submit" class="btn btn-primary">Add Stand</button>
               </form>
           </div>
         </div>
