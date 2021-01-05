@@ -216,7 +216,9 @@ app.post('/viewProduct', function(req, res) {
 });
 //END OF Add Product page
 
-
+app.post('/landing', function(req, res) {
+  res.render('landing.ejs');
+});
 //Add Product page
 app.post('/addProduct', function(req, res) {
   res.render('addProduct.ejs');
