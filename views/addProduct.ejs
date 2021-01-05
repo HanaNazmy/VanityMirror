@@ -8,34 +8,37 @@
     <!-- BOOTSTRAP CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
+<header>
+  <%- include('partials/nav-bar') %>
+</header>
 <body>
     <div class="container p-5">
-        <div class="col">
-            <div class="col-sm-5 bg-light border rounded py-3">
+        <div class="row">
+            <div class="col-sm-5 bg-light border rounded py-3 my-3 mx-3">
                 <h2 class="text-center">Add a Mirror</h2>
                 <form action="/addMirror" method="POST" enctype="multipart/form-data">
                     <button type="submit" class="btn btn-primary">Add a Mirror</button>
                 </form>
             </div>
-            <div class="col-sm-5 bg-light border rounded py-3">
+            <div class="col-sm-5 bg-light border rounded py-3 my-3 mx-3">
                 <h2 class="text-center">Add a Coffee Corner</h2>
                 <form action="/addCorner" method="POST" enctype="multipart/form-data">
                     <button type="submit" class="btn btn-primary">Add a Coffee Corner</button>
                 </form>
             </div>
-            <div class="col-sm-5 bg-light border rounded py-3">
+            <div class="col-sm-5 bg-light border rounded py-3 my-3 mx-3">
                 <h2 class="text-center">Add a Set</h2>
                 <form action="/addSet" method="POST" enctype="multipart/form-data">
                     <button type="submit" class="btn btn-primary">Add a Set</button>
                 </form>
             </div>
-            <div class="col-sm-5 bg-light border rounded py-3">
+            <div class="col-sm-5 bg-light border rounded py-3 my-3 mx-3">
                 <h2 class="text-center">Add a Shelf</h2>
                 <form action="/addShelf" method="POST" enctype="multipart/form-data">
                     <button type="submit" class="btn btn-primary">Add a Shelf</button>
                 </form>
             </div>
-            <div class="col-sm-5 bg-light border rounded py-3">
+            <div class="col-sm-5 bg-light border rounded py-3 my-3 mx-3">
                 <h2 class="text-center">Add a Stand</h2>
                 <form action="/addStand" method="POST" enctype="multipart/form-data">
                     <button type="submit" class="btn btn-primary">Add a Stand</button>

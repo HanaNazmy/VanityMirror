@@ -183,6 +183,10 @@ app.post('/', ifLoggedin, [
 app.post('/managerHome', function(req, res) {
   res.render('managerHome.ejs');
 });
+
+app.post('/landing', function(req, res) {
+  res.render('landing.ejs');
+});
 //END OF MANAGER VIEW
 
 //View Products page
