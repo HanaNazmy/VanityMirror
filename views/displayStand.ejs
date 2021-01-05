@@ -8,13 +8,16 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
+
   <div class="container p-5">
       <div class="row">
         <div class="container">
-           <h1>Stands Display is here</h1>
-            <h3>Stand is Added successfully</h3>
-        </div>
+          <div >
+              <h1>Stand  <%= name %> is Added successfully</h1>
+                <img src="<%= img %>" alt="<%= name %>"width="200" height="200" align="center" valign="center">
+          </div>
 
+        </div>
           <div class="col-sm-5 bg-light border rounded py-3">
               <form action="/managerHome" method="POST" enctype="multipart/form-data">
 

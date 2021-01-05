@@ -8,38 +8,36 @@
     <!-- BOOTSTRAP CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
-<header>
-  <%- include('partials/nav-bar') %>
-</header>
 <body>
   <div class="container p-5">
       <div class="card">
           <div class="card-body">
-                  <h5>Hello, Admin</h5>
+                  <h1>Hello, Admin</h1>
+                  <!-- <img src="images\CO305.jpeg" alt="myimgtrial"> -->
           </div>
       </div>
   </div>
     <div class="container p-5">
-        <div class="row">
-          <div class="col-sm-5 bg-light border rounded py-3 my-3 mx-3">
+        <div class="col">
+          <div class="col-sm-5 bg-light border rounded py-3">
               <h2 class="text-center">View Products</h2>
               <form action="/viewProduct" method="POST" enctype="multipart/form-data">
                   <button type="submit" class="btn btn-primary">View Products</button>
               </form>
           </div>
-            <div class="col-sm-5 bg-light border rounded py-3 my-3 mx-3">
+            <div class="col-sm-5 bg-light border rounded py-3">
                 <h2 class="text-center">Add a Product</h2>
                 <form action="/addProduct" method="POST" enctype="multipart/form-data">
                     <button type="submit" class="btn btn-primary">Add a Product</button>
                 </form>
             </div>
-            <div class="col-sm-5 bg-light border rounded py-3 my-3 mx-3">
+            <div class="col-sm-5 bg-light border rounded py-3">
                 <h2 class="text-center">Update a Product</h2>
                 <form action="/updateProduct" method="POST" enctype="multipart/form-data">
                     <button type="submit" class="btn btn-primary">Update a Product</button>
                 </form>
             </div>
-            <div class="col-sm-5 bg-light border rounded py-3 my-3 mx-3">
+            <div class="col-sm-5 bg-light border rounded py-3">
                 <h2 class="text-center">Delete a Product</h2>
                 <form action="/deleteProduct" method="POST" enctype="multipart/form-data">
                     <button type="submit" class="btn btn-primary">Delete a Product</button>

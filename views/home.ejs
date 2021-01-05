@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,9 +8,6 @@
     <!-- BOOTSTRAP CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
-<header>
-  <%- include('partials/nav-bar') %>
-</header>
 <body>
     <div class="container p-5">
         <div class="card">
@@ -18,10 +16,19 @@
             </div>
         </div>
     </div>
+    <div class="container p-5">
+        <div class="col">
+          <div class="col-sm-5 bg-light border rounded py-3">
+              <h2 class="text-center">View Products</h2>
+              <form action="/viewProduct" method="POST" enctype="multipart/form-data">
+                  <button type="submit" class="btn btn-primary">View Products</button>
+              </form>
+          </div>
+        </div>
+    </div>
       <div class="container p-5">
         <div class="">
             <a href="/logout" class="btn btn-danger">Logout</a>
-            <a href="/landing" class="btn btn-dark">Landing</a>
         </div>
       </div>
 </body>
