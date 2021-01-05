@@ -1,0 +1,84 @@
+Mirrors:
+Name: Royal White
+Color: White
+Price: 3000
+Bulbs: 14
+Length: 180 cm
+Width: 80 cm
+Thickness: 10 cm
+
+Name: Basic White
+Color: White
+Price: 2000
+Bulbs: 14
+Length: 150 cm
+Width: 70 cm
+Thickness: 10 cm
+
+
+
+Shelves:
+Name: SH105
+Color: Brown
+Price: 1500
+Length: 120 cm
+Width: 15 cm
+Thickness: 10 mm
+
+Name: SH120
+Color: Dark Brown
+Price: 2100
+Length: 100 cm
+Width: 50 cm
+Thickness: 12 mm
+
+
+
+Corners:
+Name: CO305
+Color: Blue
+Price: 3500
+Length: 300 cm
+Width: 100 cm
+Thickness: 10 mm
+
+Name: CO370
+Color: White
+Price: 3700
+Length: 250 cm
+Width: 100 cm
+Thickness: 8 mm
+
+
+
+Stands:
+Name: ST502
+Color: White 
+Price: 4500
+Length: 100 cm
+Width: 170 cm
+Thickness: 50 cm
+
+Name: ST670
+Color: White
+Price: 3000
+Length: 120 cm
+Width: 150 cm
+Thickness: 40 cm
+
+
+
+Sets:
+Name: S59
+Color: Brown
+Price: 600
+Length: 170 cm
+Width: 5 cm
+Thickness: 10 mm
+
+Name: S50
+Color: Off-white
+Price: 400
+Length: 90 cm
+Width: 4 cm
+Thickness: 5 mm

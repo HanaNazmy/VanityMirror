@@ -13,53 +13,54 @@ app.use(express.urlencoded({extended:false}));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 app.use(fileupload());
+app.use( express.static( "public" ) );
 // SET OUR VIEWS AND VIEW ENGINE
 app.set('views', path.join(__dirname,'views'));
 app.set('view engine','ejs');
 
 // APPLY COOKIE SESSION MIDDLEWARE
 app.use(cookieSession({
-    name: 'session',
-    keys: ['key1', 'key2'],
-    maxAge:  3600 * 1000 // 1hr
+  name: 'session',
+  keys: ['key1', 'key2'],
+  maxAge:  3600 * 1000 // 1hr
 }));
 
 // DECLARING CUSTOM MIDDLEWARE
 const ifNotLoggedin = (req, res, next) => {
-    if(!req.session.isLoggedIn){
-        return res.render('login-register');
-    }
-    next();
+  if(!req.session.isLoggedIn){
+    return res.render('login-register');
+  }
+  next();
 }
 
 const ifLoggedin = (req,res,next) => {
-    if(req.session.isLoggedIn){
-      // hardcoded it
-      //console.log(user_email);
-        return res.redirect('/home');
-    }
-    next();
+  if(req.session.isLoggedIn){
+    // hardcoded it
+    //console.log(user_email);
+    return res.redirect('/home');
+  }
+  next();
 }
 // END OF CUSTOM MIDDLEWARE
 
 // ROOT PAGE
 app.get('/', ifNotLoggedin, (req,res,next) => {
-    dbConnection.execute("SELECT `name`,`email`  FROM `accounts` WHERE `id`=?",[req.session.userID])
-    .then(([rows]) => {
-      // hardcoded it
-      console.log(rows[0]);
-      if(rows[0].email == 'test@test.com')
-      {
-        console.log('entered check of if');
-        res.render('managerHome');
-      }else{
-        console.log('entered check of else');
-        res.render('home',{
-          name:rows[0].name
-        });
-      }
+  dbConnection.execute("SELECT `name`,`email`  FROM `accounts` WHERE `id`=?",[req.session.userID])
+  .then(([rows]) => {
+    // hardcoded it
+    //console.log(rows[0]);
+    if(rows[0].email == 'test@test.com')
+    {
+      // console.log('entered check of if');
+      res.render('managerHome');
+    }else{
+      // console.log('entered check of else');
+      res.render('home',{
+        name:rows[0].name
+      });
+    }
 
-    });
+  });
 
 });// END OF ROOT PAGE
 
@@ -68,113 +69,113 @@ app.get('/', ifNotLoggedin, (req,res,next) => {
 app.post('/register', ifLoggedin,
 // post data validation(using express-validator)
 [
-    body('user_email','Invalid email address!').isEmail().custom((value) => {
-        return dbConnection.execute('SELECT `email` FROM `accounts` WHERE `email`=?', [value])
-        .then(([rows]) => {
-            if(rows.length > 0){
-                return Promise.reject('This E-mail already in use!');
-            }
-            return true;
-        });
-    }),
-    body('user_name','Username is Empty!').trim().not().isEmpty(),
-    body('user_pass','The password must be of minimum length 6 characters').trim().isLength({ min: 6 }),
+  body('user_email','Invalid email address!').isEmail().custom((value) => {
+    return dbConnection.execute('SELECT `email` FROM `accounts` WHERE `email`=?', [value])
+    .then(([rows]) => {
+      if(rows.length > 0){
+        return Promise.reject('This E-mail already in use!');
+      }
+      return true;
+    });
+  }),
+  body('user_name','Username is Empty!').trim().not().isEmpty(),
+  body('user_pass','The password must be of minimum length 6 characters').trim().isLength({ min: 6 }),
 ],// end of post data validation
 (req,res,next) => {
 
-    const validation_result = validationResult(req);
-    const {user_name, user_pass, user_email} = req.body;
-    // IF validation_result HAS NO ERROR
-    if(validation_result.isEmpty()){
-        // password encryption (using bcryptjs)
-        bcrypt.hash(user_pass, 12).then((hash_pass) => {
-            // INSERTING USER INTO DATABASE
-            dbConnection.execute("INSERT INTO `accounts`(`name`,`email`,`password`) VALUES(?,?,?)",[user_name,user_email, hash_pass])
-            .then(result => {
-                res.send(`your account has been created successfully, Now you can <a href="/">Login</a>`);
-            }).catch(err => {
-                // THROW INSERTING USER ERROR'S
-                if (err) throw err;
-            });
-        })
-        .catch(err => {
-            // THROW HASING ERROR'S
-            if (err) throw err;
-        })
-    }
-    else{
-        // COLLECT ALL THE VALIDATION ERRORS
-        let allErrors = validation_result.errors.map((error) => {
-            return error.msg;
-        });
-        // REDERING login-register PAGE WITH VALIDATION ERRORS
-        res.render('login-register',{
-            register_error:allErrors,
-            old_data:req.body
-        });
-    }
+  const validation_result = validationResult(req);
+  const {user_name, user_pass, user_email} = req.body;
+  // IF validation_result HAS NO ERROR
+  if(validation_result.isEmpty()){
+    // password encryption (using bcryptjs)
+    bcrypt.hash(user_pass, 12).then((hash_pass) => {
+      // INSERTING USER INTO DATABASE
+      dbConnection.execute("INSERT INTO `accounts`(`name`,`email`,`password`) VALUES(?,?,?)",[user_name,user_email, hash_pass])
+      .then(result => {
+        res.send(`your account has been created successfully, Now you can <a href="/">Login</a>`);
+      }).catch(err => {
+        // THROW INSERTING USER ERROR'S
+        if (err) throw err;
+      });
+    })
+    .catch(err => {
+      // THROW HASING ERROR'S
+      if (err) throw err;
+    })
+  }
+  else{
+    // COLLECT ALL THE VALIDATION ERRORS
+    let allErrors = validation_result.errors.map((error) => {
+      return error.msg;
+    });
+    // REDERING login-register PAGE WITH VALIDATION ERRORS
+    res.render('login-register',{
+      register_error:allErrors,
+      old_data:req.body
+    });
+  }
 });// END OF REGISTER PAGE
 
 // LOGIN PAGE
 app.post('/', ifLoggedin, [
-    body('user_email').custom((value) => {
-        return dbConnection.execute('SELECT `email` FROM `accounts` WHERE `email`=?', [value])
-        .then(([rows]) => {
+  body('user_email').custom((value) => {
+    return dbConnection.execute('SELECT `email` FROM `accounts` WHERE `email`=?', [value])
+    .then(([rows]) => {
 
-            if(rows.length == 1){
-                return true;
+      if(rows.length == 1){
+        return true;
 
-            }
-            return Promise.reject('Invalid Email Address!');
+      }
+      return Promise.reject('Invalid Email Address!');
 
-        });
-    }),
-    body('user_pass','Password is empty!').trim().not().isEmpty(),
+    });
+  }),
+  body('user_pass','Password is empty!').trim().not().isEmpty(),
 ], (req, res) => {
-    const validation_result = validationResult(req);
-    const {user_pass, user_email} = req.body;
-    if(validation_result.isEmpty()){
+  const validation_result = validationResult(req);
+  const {user_pass, user_email} = req.body;
+  if(validation_result.isEmpty()){
 
-        dbConnection.execute("SELECT * FROM `accounts` WHERE `email`=?",[user_email])
-        .then(([rows]) => {
-            bcrypt.compare(user_pass, rows[0].password).then(compare_result => {
-                if(compare_result === true){
-                    req.session.isLoggedIn = true;
-                    req.session.userID = rows[0].id;
-                    // need to check a certain userID of admin
-                    // hardcoded it
-                    if(user_email == 'test@test.com')
-                    {
-                      res.render('managerHome');
-                    }
-                    else{
-                      res.redirect('/');
-                    }
-                }
-                else{
-                    res.render('login-register',{
-                        login_errors:['Invalid Password!']
-                    });
-                }
-            })
-            .catch(err => {
-                if (err) throw err;
-            });
+    dbConnection.execute("SELECT * FROM `accounts` WHERE `email`=?",[user_email])
+    .then(([rows]) => {
+      bcrypt.compare(user_pass, rows[0].password).then(compare_result => {
+        if(compare_result === true){
+          req.session.isLoggedIn = true;
+          req.session.userID = rows[0].id;
+          // need to check a certain userID of admin
+          // hardcoded it
+          if(user_email == 'test@test.com')
+          {
+            res.render('managerHome');
+          }
+          else{
+            res.redirect('/');
+          }
+        }
+        else{
+          res.render('login-register',{
+            login_errors:['Invalid Password!']
+          });
+        }
+      })
+      .catch(err => {
+        if (err) throw err;
+      });
 
 
-        }).catch(err => {
-            if (err) throw err;
-        });
-    }
-    else{
-        let allErrors = validation_result.errors.map((error) => {
-            return error.msg;
-        });
-        // RENDERING login-register PAGE WITH LOGIN VALIDATION ERRORS
-        res.render('login-register',{
-            login_errors:allErrors
-        });
-    }
+    }).catch(err => {
+      if (err) throw err;
+    });
+  }
+  else{
+    let allErrors = validation_result.errors.map((error) => {
+      return error.msg;
+    });
+    // RENDERING login-register PAGE WITH LOGIN VALIDATION ERRORS
+    res.render('login-register',{
+      login_errors:allErrors
+    });
+  }
 });
 // END OF LOGIN PAGE
 
@@ -186,16 +187,35 @@ app.post('/managerHome', function(req, res) {
 
 //View Products page
 app.post('/viewProduct', function(req, res) {
-  var sql = "SELECT * FROM `mirrors`";
+  var sql = "SELECT `name`,`img` FROM `mirrors`";
   dbConnection.execute(sql).then(([rows]) => {
-    console.log(rows);
-    res.render('viewProduct');
-  }).catch(err => {
-    throw err;
+    var names_imgs = [];
+    var imgs = [];
+    if(rows)
+    {
+      var i =0;
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        names_imgs.push([row.name, row.img]);
+          // names_imgs[i][0] = row.name;
+          // names_imgs[i][1] = row.img;
+        }
+        console.log(names_imgs);
+        // console.log(names);
+        // console.log(imgs);
+        //{name:name,img:img}
+        //res.render('viewProduct.ejs',{names:names, imgs:imgs});
+        res.render('viewProduct.ejs',{names:names_imgs});
+    }else
+    {
+      throw err;
+      res.render('viewProduct.ejs');
+    }
   });
-  res.render('viewProduct.ejs');
+
 });
 //END OF Add Product page
+
 
 //Add Product page
 app.post('/addProduct', function(req, res) {
@@ -289,33 +309,37 @@ app.post('/displayMirror', function(req, res) {
   var width = mirror.mirror_width;
   var thickness = mirror.mirror_thickness;
   var file = req.files.mirror_img;
-  var img_path = 'public\\images\\uploaded_images\\'+file.name;
+
+  //var img_path = 'images'+'\\'+'uploaded_images'+'\\'+file.name;
+  var img_path = path.join('images', '\\', 'uploaded_images', '\\', file.name);
+  var full_img_path = 'public\\'+ img_path;
 
   // console.log("1 image is read");
-	if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/jpg" ){
-      file.mv(img_path, function(err) {
-        if (err)
-          return res.status(500).send(err);
-          // var canvas = imageConversion.imagetoCanvas(file);
-          // canvastoFile(canvas) → {Promise(Blob)}
-          var sql = "INSERT INTO `mirrors`(`name`,`color`,`bulbsnumber`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + bulbs + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
+  if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/jpg" ){
+    file.mv(full_img_path, function(err) {
+      if (err)
+      return res.status(500).send(err);
+      var sql = "INSERT INTO `mirrors`(`name`,`color`,`bulbsnumber`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + bulbs + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
+      dbConnection.execute(sql).then(([rows]) => {
 
-          dbConnection.execute(sql).then(result => {
-            res.render('displayMirror');
-          }).catch(err => {
-               if (err.code === 'ER_DUP_ENTRY') {
-                 res.send(`Mirror already exists!`);
-                 res.render('displayMirror');
-                   //handleHttpErrors(SYSTEM_ERRORS.USER_ALREADY_EXISTS);
-               }
-              // THROW INSERTING USER ERROR'S
-              else throw err;
-          });
-	   });
- }else {
-   message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
-   res.render('addMirror.js',{message: message});
- }
+        res.render('displayMirror',
+        {name:name,img:img_path});
+
+      }).catch(err => {
+        if (err.code === 'ER_DUP_ENTRY') {
+          res.send(`Mirror already exists!`);
+          res.render('displayMirror');
+          //handleHttpErrors(SYSTEM_ERRORS.USER_ALREADY_EXISTS);
+        }
+        // THROW INSERTING USER ERROR'S
+        else throw err;
+      }); //end of catch
+    }); // end of filemv
+  }
+  else {
+    message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
+    res.render('addMirror.js',{message: message});
+  }
 });
 //END OF UPLOAD MIRROR
 
@@ -332,33 +356,34 @@ app.post('/displayCorner', function(req, res) {
   var width = corner.corner_width;
   var thickness = corner.corner_thickness;
   var file = req.files.corner_img;
-  var img_path = 'public\\images\\uploaded_images\\'+file.name;
+  var img_path = 'images\\uploaded_images\\'+file.name;
+  var full_img_path = 'public\\'+ img_path;
 
   // console.log("1 image is read");
-	if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/jpg" ){
-      file.mv(img_path, function(err) {
-        if (err)
-          return res.status(500).send(err);
-          // var canvas = imageConversion.imagetoCanvas(file);
-          // canvastoFile(canvas) → {Promise(Blob)}
-          var sql = "INSERT INTO `corners`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
+  if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/jpg" ){
+    file.mv(full_img_path, function(err) {
+      if (err)
+      return res.status(500).send(err);
+      // var canvas = imageConversion.imagetoCanvas(file);
+      // canvastoFile(canvas) → {Promise(Blob)}
+      var sql = "INSERT INTO `corners`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
 
-          dbConnection.execute(sql).then(result => {
-            res.render('displayCorner');
-          }).catch(err => {
-               if (err.code === 'ER_DUP_ENTRY') {
-                 res.send(`Corner already exists!`);
-                 res.render('displayCorner');
-                   //handleHttpErrors(SYSTEM_ERRORS.USER_ALREADY_EXISTS);
-               }
-              // THROW INSERTING USER ERROR'S
-              else throw err;
-          });
-	   });
- }else {
-   message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
-   res.render('addCorner.js',{message: message});
- }
+      dbConnection.execute(sql).then(result => {
+        res.render('displayCorner');
+      }).catch(err => {
+        if (err.code === 'ER_DUP_ENTRY') {
+          res.send(`Corner already exists!`);
+          res.render('displayCorner');
+          //handleHttpErrors(SYSTEM_ERRORS.USER_ALREADY_EXISTS);
+        }
+        // THROW INSERTING USER ERROR'S
+        else throw err;
+      });
+    });
+  }else {
+    message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
+    res.render('addCorner.js',{message: message});
+  }
 });
 //END OF UPLOAD CORNER
 
@@ -375,33 +400,34 @@ app.post('/displayShelf', function(req, res) {
   var width = shelf.shelf_width;
   var thickness = shelf.shelf_thickness;
   var file = req.files.shelf_img;
-  var img_path = 'public\\images\\uploaded_images\\'+file.name;
+  var img_path = 'images\\uploaded_images\\'+file.name;
+  var full_img_path = 'public\\'+ img_path;
 
   // console.log("1 image is read");
-	if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/jpg" ){
-      file.mv(img_path, function(err) {
-        if (err)
-          return res.status(500).send(err);
-          // var canvas = imageConversion.imagetoCanvas(file);
-          // canvastoFile(canvas) → {Promise(Blob)}
-          var sql = "INSERT INTO `shelves`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
+  if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/jpg" ){
+    file.mv(full_img_path, function(err) {
+      if (err)
+      return res.status(500).send(err);
+      // var canvas = imageConversion.imagetoCanvas(file);
+      // canvastoFile(canvas) → {Promise(Blob)}
+      var sql = "INSERT INTO `shelves`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
 
-          dbConnection.execute(sql).then(result => {
-            res.render('displayShelf');
-          }).catch(err => {
-               if (err.code === 'ER_DUP_ENTRY') {
-                 res.send(`Shelf already exists!`);
-                 res.render('displayShelf');
-                   //handleHttpErrors(SYSTEM_ERRORS.USER_ALREADY_EXISTS);
-               }
-              // THROW INSERTING USER ERROR'S
-              else throw err;
-          });
-	   });
- }else {
-   message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
-   res.render('addShelf.js',{message: message});
- }
+      dbConnection.execute(sql).then(result => {
+        res.render('displayShelf');
+      }).catch(err => {
+        if (err.code === 'ER_DUP_ENTRY') {
+          res.send(`Shelf already exists!`);
+          res.render('displayShelf');
+          //handleHttpErrors(SYSTEM_ERRORS.USER_ALREADY_EXISTS);
+        }
+        // THROW INSERTING USER ERROR'S
+        else throw err;
+      });
+    });
+  }else {
+    message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
+    res.render('addShelf.js',{message: message});
+  }
 });
 //END OF UPLOAD SHELF
 
@@ -418,33 +444,34 @@ app.post('/displaySet', function(req, res) {
   var width = set.set_width;
   var thickness = set.set_thickness;
   var file = req.files.set_img;
-  var img_path = 'public\\images\\uploaded_images\\'+file.name;
+  var img_path = 'images\\uploaded_images\\'+file.name;
+  var full_img_path = 'public\\'+ img_path;
 
   // console.log("1 image is read");
-	if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/jpg" ){
-      file.mv(img_path, function(err) {
-        if (err)
-          return res.status(500).send(err);
-          // var canvas = imageConversion.imagetoCanvas(file);
-          // canvastoFile(canvas) → {Promise(Blob)}
-          var sql = "INSERT INTO `sets`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
+  if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/jpg" ){
+    file.mv(full_img_path, function(err) {
+      if (err)
+      return res.status(500).send(err);
+      // var canvas = imageConversion.imagetoCanvas(file);
+      // canvastoFile(canvas) → {Promise(Blob)}
+      var sql = "INSERT INTO `sets`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
 
-          dbConnection.execute(sql).then(result => {
-            res.render('displaySet');
-          }).catch(err => {
-               if (err.code === 'ER_DUP_ENTRY') {
-                 res.send(`Set already exists!`);
-                 res.render('displaySet');
-                   //handleHttpErrors(SYSTEM_ERRORS.USER_ALREADY_EXISTS);
-               }
-              // THROW INSERTING USER ERROR'S
-              else throw err;
-          });
-	   });
- }else {
-   message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
-   res.render('addSet.js',{message: message});
- }
+      dbConnection.execute(sql).then(result => {
+        res.render('displaySet');
+      }).catch(err => {
+        if (err.code === 'ER_DUP_ENTRY') {
+          res.send(`Set already exists!`);
+          res.render('displaySet');
+          //handleHttpErrors(SYSTEM_ERRORS.USER_ALREADY_EXISTS);
+        }
+        // THROW INSERTING USER ERROR'S
+        else throw err;
+      });
+    });
+  }else {
+    message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
+    res.render('addSet.js',{message: message});
+  }
 });
 //END OF UPLOAD SET
 
@@ -461,46 +488,61 @@ app.post('/displayStand', function(req, res) {
   var width = stand.stand_width;
   var thickness = stand.stand_thickness;
   var file = req.files.stand_img;
-  var img_path = 'public\\images\\uploaded_images\\'+file.name;
+  var img_path = 'images\\uploaded_images\\'+file.name;
+  var full_img_path = 'public\\'+ img_path;
 
   // console.log("1 image is read");
-	if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/jpg" ){
-      file.mv(img_path, function(err) {
-        if (err)
-          return res.status(500).send(err);
-          // var canvas = imageConversion.imagetoCanvas(file);
-          // canvastoFile(canvas) → {Promise(Blob)}
-          var sql = "INSERT INTO `stands`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
+  if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/jpg" ){
+    file.mv(full_img_path, function(err) {
+      if (err)
+      return res.status(500).send(err);
+      // var canvas = imageConversion.imagetoCanvas(file);
+      // canvastoFile(canvas) → {Promise(Blob)}
+      var sql = "INSERT INTO `stands`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
 
-          dbConnection.execute(sql).then(result => {
-            res.render('displayStand');
-          }).catch(err => {
-               if (err.code === 'ER_DUP_ENTRY') {
-                 res.send(`Stand already exists!`);
-                 res.render('displayStand');
-                   //handleHttpErrors(SYSTEM_ERRORS.USER_ALREADY_EXISTS);
-               }
-              // THROW INSERTING USER ERROR'S
-              else throw err;
-          });
-	   });
- }else {
-   message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
-   res.render('addStand.js',{message: message});
- }
+      dbConnection.execute(sql).then(result => {
+        res.render('displayStand');
+      }).catch(err => {
+        if (err.code === 'ER_DUP_ENTRY') {
+          res.send(`Stand already exists!`);
+          res.render('displayStand');
+          //handleHttpErrors(SYSTEM_ERRORS.USER_ALREADY_EXISTS);
+        }
+        // THROW INSERTING USER ERROR'S
+        else throw err;
+      });
+    });
+  }else {
+    message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
+    res.render('addStand.js',{message: message});
+  }
 });
 //END OF UPLOAD STAND
+//
+// // TRYING APP.GET FOR landingPage
+// // ROOT PAGE
+// app.get('/landingPage',(req,res,next) => {
+//   dbConnection.execute("SELECT `name`,`img`  FROM `mirrors`)
+//   .then(([rows]) => {
+//     var name = rows[0].name;
+//     var img = rows[0].img;
+//     console.log(rows[0]);
+//       res.render('home',{name:name,img:img
+//       }); //end render
+//     }); //end rows
+// });
+// //
 
 // LOGOUT
 app.get('/logout',(req,res)=>{
-    //session destroy
-    req.session = null;
-    res.redirect('/');
+  //session destroy
+  req.session = null;
+  res.redirect('/');
 });
 // END OF LOGOUT
 
 app.use('/', (req,res) => {
-    res.status(404).send('<h1>404 Page Not Found!</h1>');
+  res.status(404).send('<h1>404 Page Not Found!</h1>');
 });
 
 app.listen(3000, () => console.log("Server is Running..."));
