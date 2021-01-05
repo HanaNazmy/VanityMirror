@@ -187,25 +187,70 @@ app.post('/managerHome', function(req, res) {
 
 //View Products page
 app.post('/viewProduct', function(req, res) {
-  var sql = "SELECT `name`,`img` FROM `mirrors`";
+  var sql = "SELECT * FROM `mirrors`";
+  var sql1 = "SELECT * FROM `corners`";
+  var sql2 = "SELECT * FROM `sets`";
+  var sql3 = "SELECT * FROM `shelves`";
+  var sql4 = "SELECT * FROM `stands`";
+  var data_all = [];
+  var mirrors_data = [];
   dbConnection.execute(sql).then(([rows]) => {
-    var names_imgs = [];
-    var imgs = [];
     if(rows)
-    {
-      var i =0;
+    {   var i =0;
       for (var i = 0; i < rows.length; i++) {
         var row = rows[i];
-        names_imgs.push([row.name, row.img]);
-          // names_imgs[i][0] = row.name;
-          // names_imgs[i][1] = row.img;
+       mirrors_data.push([row.name, row.color, row.price, row.length, row.width, row.thickness, row.bulbsnumber]);
         }
-        console.log(names_imgs);
-        // console.log(names);
-        // console.log(imgs);
-        //{name:name,img:img}
-        //res.render('viewProduct.ejs',{names:names, imgs:imgs});
-        res.render('viewProduct.ejs',{names:names_imgs});
+      }else
+      {
+        throw err;
+    }
+  });
+  dbConnection.execute(sql4).then(([rows]) => {
+    if(rows)
+    {   var i =0;
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+       data_all.push([row.name, row.color, row.price, row.length, row.width, row.thickness]);
+        }
+      }else
+      {
+        throw err;
+    }
+  });
+  dbConnection.execute(sql3).then(([rows]) => {
+    if(rows)
+    {   var i =0;
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+       data_all.push([row.name, row.color, row.price, row.length, row.width, row.thickness]);
+        }
+      }else
+      {
+        throw err;
+    }
+  });
+  dbConnection.execute(sql2).then(([rows]) => {
+    if(rows)
+    {   var i =0;
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+       data_all.push([row.name, row.color, row.price, row.length, row.width, row.thickness]);
+        }
+      }else
+      {
+        throw err;
+    }
+  });
+  dbConnection.execute(sql1).then(([rows]) => {
+    if(rows)
+    {   var i =0;
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+      //  data_all.push([row.name, row.color, row.price, row.bulbsnumber, row.length, row.width, row.thickness]);
+       data_all.push([row.name, row.color, row.price, row.length, row.width, row.thickness]);
+        }
+        res.render('viewProduct.ejs',{data:data_all, mirrors:mirrors_data});
     }else
     {
       throw err;
@@ -216,9 +261,7 @@ app.post('/viewProduct', function(req, res) {
 });
 //END OF Add Product page
 
-app.post('/landing', function(req, res) {
-  res.render('landing.ejs');
-});
+
 //Add Product page
 app.post('/addProduct', function(req, res) {
   res.render('addProduct.ejs');
@@ -358,7 +401,9 @@ app.post('/displayCorner', function(req, res) {
   var width = corner.corner_width;
   var thickness = corner.corner_thickness;
   var file = req.files.corner_img;
-  var img_path = 'images\\uploaded_images\\'+file.name;
+
+  //var img_path = 'images'+'\\'+'uploaded_images'+'\\'+file.name;
+  var img_path = path.join('images', '\\', 'uploaded_images', '\\', file.name);
   var full_img_path = 'public\\'+ img_path;
 
   // console.log("1 image is read");
@@ -366,12 +411,12 @@ app.post('/displayCorner', function(req, res) {
     file.mv(full_img_path, function(err) {
       if (err)
       return res.status(500).send(err);
-      // var canvas = imageConversion.imagetoCanvas(file);
-      // canvastoFile(canvas) → {Promise(Blob)}
-      var sql = "INSERT INTO `corners`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
+      var sql = "INSERT INTO `corners`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" + color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
+      dbConnection.execute(sql).then(([rows]) => {
 
-      dbConnection.execute(sql).then(result => {
-        res.render('displayCorner');
+        res.render('displayCorner',
+        {name:name,img:img_path});
+
       }).catch(err => {
         if (err.code === 'ER_DUP_ENTRY') {
           res.send(`Corner already exists!`);
@@ -380,9 +425,10 @@ app.post('/displayCorner', function(req, res) {
         }
         // THROW INSERTING USER ERROR'S
         else throw err;
-      });
-    });
-  }else {
+      }); //end of catch
+    }); // end of filemv
+  }
+  else {
     message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
     res.render('addCorner.js',{message: message});
   }
@@ -402,7 +448,9 @@ app.post('/displayShelf', function(req, res) {
   var width = shelf.shelf_width;
   var thickness = shelf.shelf_thickness;
   var file = req.files.shelf_img;
-  var img_path = 'images\\uploaded_images\\'+file.name;
+
+  //var img_path = 'images'+'\\'+'uploaded_images'+'\\'+file.name;
+  var img_path = path.join('images', '\\', 'uploaded_images', '\\', file.name);
   var full_img_path = 'public\\'+ img_path;
 
   // console.log("1 image is read");
@@ -410,12 +458,12 @@ app.post('/displayShelf', function(req, res) {
     file.mv(full_img_path, function(err) {
       if (err)
       return res.status(500).send(err);
-      // var canvas = imageConversion.imagetoCanvas(file);
-      // canvastoFile(canvas) → {Promise(Blob)}
-      var sql = "INSERT INTO `shelves`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
+      var sql = "INSERT INTO `shelfs`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
+      dbConnection.execute(sql).then(([rows]) => {
 
-      dbConnection.execute(sql).then(result => {
-        res.render('displayShelf');
+        res.render('displayShelf',
+        {name:name,img:img_path});
+
       }).catch(err => {
         if (err.code === 'ER_DUP_ENTRY') {
           res.send(`Shelf already exists!`);
@@ -424,13 +472,15 @@ app.post('/displayShelf', function(req, res) {
         }
         // THROW INSERTING USER ERROR'S
         else throw err;
-      });
-    });
-  }else {
+      }); //end of catch
+    }); // end of filemv
+  }
+  else {
     message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
     res.render('addShelf.js',{message: message});
   }
 });
+
 //END OF UPLOAD SHELF
 
 // UPLOAD SET
@@ -446,7 +496,9 @@ app.post('/displaySet', function(req, res) {
   var width = set.set_width;
   var thickness = set.set_thickness;
   var file = req.files.set_img;
-  var img_path = 'images\\uploaded_images\\'+file.name;
+
+  //var img_path = 'images'+'\\'+'uploaded_images'+'\\'+file.name;
+  var img_path = path.join('images', '\\', 'uploaded_images', '\\', file.name);
   var full_img_path = 'public\\'+ img_path;
 
   // console.log("1 image is read");
@@ -454,12 +506,12 @@ app.post('/displaySet', function(req, res) {
     file.mv(full_img_path, function(err) {
       if (err)
       return res.status(500).send(err);
-      // var canvas = imageConversion.imagetoCanvas(file);
-      // canvastoFile(canvas) → {Promise(Blob)}
-      var sql = "INSERT INTO `sets`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
+      var sql = "INSERT INTO `sets`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" + color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
+      dbConnection.execute(sql).then(([rows]) => {
 
-      dbConnection.execute(sql).then(result => {
-        res.render('displaySet');
+        res.render('displaySet',
+        {name:name,img:img_path});
+
       }).catch(err => {
         if (err.code === 'ER_DUP_ENTRY') {
           res.send(`Set already exists!`);
@@ -468,13 +520,15 @@ app.post('/displaySet', function(req, res) {
         }
         // THROW INSERTING USER ERROR'S
         else throw err;
-      });
-    });
-  }else {
+      }); //end of catch
+    }); // end of filemv
+  }
+  else {
     message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
     res.render('addSet.js',{message: message});
   }
 });
+
 //END OF UPLOAD SET
 
 // UPLOAD STAND
@@ -490,7 +544,9 @@ app.post('/displayStand', function(req, res) {
   var width = stand.stand_width;
   var thickness = stand.stand_thickness;
   var file = req.files.stand_img;
-  var img_path = 'images\\uploaded_images\\'+file.name;
+
+  //var img_path = 'images'+'\\'+'uploaded_images'+'\\'+file.name;
+  var img_path = path.join('images', '\\', 'uploaded_images', '\\', file.name);
   var full_img_path = 'public\\'+ img_path;
 
   // console.log("1 image is read");
@@ -498,12 +554,12 @@ app.post('/displayStand', function(req, res) {
     file.mv(full_img_path, function(err) {
       if (err)
       return res.status(500).send(err);
-      // var canvas = imageConversion.imagetoCanvas(file);
-      // canvastoFile(canvas) → {Promise(Blob)}
       var sql = "INSERT INTO `stands`(`name`,`color`,`price`,`length`,`width`,`thickness`,`img`) VALUES ('" + name + "','" +color + "','" + price + "','" + length+ "','" +width+ "','" +thickness+ "','" +  img_path + "')";
+      dbConnection.execute(sql).then(([rows]) => {
 
-      dbConnection.execute(sql).then(result => {
-        res.render('displayStand');
+        res.render('displayStand',
+        {name:name,img:img_path});
+
       }).catch(err => {
         if (err.code === 'ER_DUP_ENTRY') {
           res.send(`Stand already exists!`);
@@ -512,28 +568,16 @@ app.post('/displayStand', function(req, res) {
         }
         // THROW INSERTING USER ERROR'S
         else throw err;
-      });
-    });
-  }else {
+      }); //end of catch
+    }); // end of filemv
+  }
+  else {
     message = "This format is not allowed , please upload file with '.png','.gif','.jpg'";
     res.render('addStand.js',{message: message});
   }
 });
+
 //END OF UPLOAD STAND
-//
-// // TRYING APP.GET FOR landingPage
-// // ROOT PAGE
-// app.get('/landingPage',(req,res,next) => {
-//   dbConnection.execute("SELECT `name`,`img`  FROM `mirrors`)
-//   .then(([rows]) => {
-//     var name = rows[0].name;
-//     var img = rows[0].img;
-//     console.log(rows[0]);
-//       res.render('home',{name:name,img:img
-//       }); //end render
-//     }); //end rows
-// });
-// //
 
 // LOGOUT
 app.get('/logout',(req,res)=>{
